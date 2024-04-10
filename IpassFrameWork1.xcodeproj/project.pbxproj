@@ -31,6 +31,7 @@
 		75E326B22BC6B945001375E4 /* NSObject+ClassName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326A42BC6B945001375E4 /* NSObject+ClassName.swift */; };
 		75E326B32BC6B945001375E4 /* ResultType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326A52BC6B945001375E4 /* ResultType+Extensions.swift */; };
 		75E326B42BC6B945001375E4 /* RFIDAccessControlProcedureType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326A62BC6B945001375E4 /* RFIDAccessControlProcedureType+Extensions.swift */; };
+		75E326D22BC6C4D6001375E4 /* ApiHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326D12BC6C4D6001375E4 /* ApiHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		75E326A42BC6B945001375E4 /* NSObject+ClassName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+ClassName.swift"; sourceTree = "<group>"; };
 		75E326A52BC6B945001375E4 /* ResultType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResultType+Extensions.swift"; sourceTree = "<group>"; };
 		75E326A62BC6B945001375E4 /* RFIDAccessControlProcedureType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RFIDAccessControlProcedureType+Extensions.swift"; sourceTree = "<group>"; };
+		75E326D12BC6C4D6001375E4 /* ApiHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiHandler.swift; sourceTree = "<group>"; };
 		77A15FA850B860DBA2E81B44 /* Pods_IpassFrameWork1.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IpassFrameWork1.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91A120A78EAD50B17D670E6D /* Pods-IpassFrameWork1.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IpassFrameWork1.release.xcconfig"; path = "Target Support Files/Pods-IpassFrameWork1/Pods-IpassFrameWork1.release.xcconfig"; sourceTree = "<group>"; };
 		A6777EB556EC8054F1697E64 /* Pods-IpassFrameWork1.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IpassFrameWork1.debug.xcconfig"; path = "Target Support Files/Pods-IpassFrameWork1/Pods-IpassFrameWork1.debug.xcconfig"; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				75E326032BC678B5001375E4 /* DBService.swift */,
 				75E326242BC69D38001375E4 /* FullProcess.swift */,
 				75E3267A2BC6A429001375E4 /* ApplicationSetting.swift */,
+				75E326D12BC6C4D6001375E4 /* ApiHandler.swift */,
 			);
 			path = IpassFrameWork1;
 			sourceTree = "<group>";
@@ -284,6 +287,7 @@
 				75E326AE2BC6B945001375E4 /* FieldType+Extensions.swift in Sources */,
 				75E326B22BC6B945001375E4 /* NSObject+ClassName.swift in Sources */,
 				75E326272BC69F28001375E4 /* Types.swift in Sources */,
+				75E326D22BC6C4D6001375E4 /* ApiHandler.swift in Sources */,
 				75E326B02BC6B945001375E4 /* MeasureSystem+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

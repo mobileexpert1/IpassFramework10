@@ -17,7 +17,7 @@ public class StartFullProcess {
     public var delegate:ScanningResultData?
 
     
-    public static func fullProcessScanning(type: Int, controller: UIViewController, completion: @escaping ([[String: Any]]?, Error?) -> Void) {
+    public static func fullProcessScanning(type: Int, controller: UIViewController, completion: @escaping (String?, Error?) -> Void) {
         let config = DocReader.ScannerConfig()
         
         switch type {
@@ -32,77 +32,144 @@ public class StartFullProcess {
         default:
             config.scenario = RGL_SCENARIO_FULL_AUTH
         }
-        
-        DocReader.shared.showScanner(presenter: controller, config: config) { (action, result, error) in
-            DispatchQueue.main.async {
-                print("action", action)
-                print("error", error as Any)
+        DocReader.shared.showScanner(presenter: controller, config: config) { [self] (action, docResults, error) in
+            if action == .complete || action == .processTimeout {
+                 print(docResults?.rawResult as Any)
                 
-                var scanningResultData: [[String: Any]] = []
-                
-                if let result = result, action == .complete || action == .processTimeout {
-//                    print("123456789", result.textResult as Any)
-                    
-                    if result.chipPage != 0 {
-                        // Start RFID reading if necessary
-                        let process = StartFullProcess()
-                        process.startRFIDReading(presenterClass: controller, opticalResults: result) { (result, error) in
-                            if let result = result {
-                                // Handle scanning result data
-                                print("Received scanning result:", result)
-                                completion(result, nil)
-                            } else if let error = error {
-                                // Handle error
-                                print("Error during scanning:", error.localizedDescription)
-                                completion(nil, error)
-                            } else {
-                                // Scanning was canceled
-                                print("Scanning was canceled")
-                                completion(nil, NSError(domain: "DecryptionError", code: -1, userInfo: nil))
-                            }
-                        }
-//                        process.startRFIDReading(presenterClass: controller, opticalResults: result)
-                    } else {
-                        if ApplicationSetting.shared.isDataEncryptionEnabled {
-                            StartFullProcess.processEncryptedResults(result) { decryptedResult in
-                                guard let decryptedResult = decryptedResult else {
-                                    print("Can't decrypt result")
-                                    completion(nil, NSError(domain: "DecryptionError", code: -1, userInfo: nil))
+    
+                    if docResults?.chipPage != 0  {
+                        //self.startRFIDReading(res)
+                        
+                        DocReader.shared.startRFIDReader(fromPresenter: controller, completion: { [] (action, results, error) in
+                            switch action {
+                            case .complete:
+                                guard let results = results else {
                                     return
                                 }
-                                for field in result.textResult.fields {
-                                    let fieldName = field.fieldName
-                                    let value = field.value
-                                    let dict = [fieldName: value]
-                                    scanningResultData.append(dict)
+                                completion(results.rawResult, nil)
+                            case .cancel:
+                                guard let results = docResults else {
+                                    return
                                 }
-                                
-                               
+                                completion(results.rawResult, nil)
+                            case .error:
+                                print("Error")
+                            default:
+                                break
                             }
-                        } else {
-                            for field in result.textResult.fields {
-                                let fieldName = field.fieldName
-                                let value = field.value
-                                let dict = [fieldName: value]
-                                scanningResultData.append(dict)
-                            }
-                            
-                            
-                        }
+                        })
+
+                        
+                        
+                    } else {
+                        completion(docResults?.rawResult, nil)
                     }
-                }
+                    
+            
                 
-                if action == .complete || action == .processTimeout {
-                    completion(scanningResultData, nil)
-                } else if action == .cancel {
-                    // Handle cancellation if needed
-                    completion(nil, NSError(domain: "ScanningCancelled", code: -1, userInfo: nil))
-                } else {
-                    completion(nil, error)
-                }
+              
+                
+                
+                
+            
+              
+                               
+             
+                
+            }
+            else  if action == .cancel  {
+               
             }
         }
+      
     }
+    
+//    public static func fullProcessScanning(type: Int, controller: UIViewController, completion: @escaping ([[String: Any]]?, Error?) -> Void) {
+//        let config = DocReader.ScannerConfig()
+//        
+//        switch type {
+//        case 0:
+//            config.scenario = RGL_SCENARIO_FULL_AUTH
+//        case 1:
+//            config.scenario = RGL_SCENARIO_CREDIT_CARD
+//        case 2:
+//            config.scenario = RGL_SCENARIO_MRZ
+//        case 3:
+//            config.scenario = RGL_SCENARIO_BARCODE
+//        default:
+//            config.scenario = RGL_SCENARIO_FULL_AUTH
+//        }
+//        
+//        DocReader.shared.showScanner(presenter: controller, config: config) { (action, result, error) in
+//            DispatchQueue.main.async {
+//                print("action", action)
+//                print("error", error as Any)
+//                
+//                var scanningResultData: [[String: Any]] = []
+//                
+//                if let result = result, action == .complete || action == .processTimeout {
+////                    print("123456789", result.textResult as Any)
+//                    
+//                    if result.chipPage != 0 {
+//                        // Start RFID reading if necessary
+//                        let process = StartFullProcess()
+//                        process.startRFIDReading(presenterClass: controller, opticalResults: result) { (result, error) in
+//                            if let result = result {
+//                                // Handle scanning result data
+//                                print("Received scanning result:", result)
+//                                completion(result, nil)
+//                            } else if let error = error {
+//                                // Handle error
+//                                print("Error during scanning:", error.localizedDescription)
+//                                completion(nil, error)
+//                            } else {
+//                                // Scanning was canceled
+//                                print("Scanning was canceled")
+//                                completion(nil, NSError(domain: "DecryptionError", code: -1, userInfo: nil))
+//                            }
+//                        }
+////                        process.startRFIDReading(presenterClass: controller, opticalResults: result)
+//                    } else {
+//                        if ApplicationSetting.shared.isDataEncryptionEnabled {
+//                            StartFullProcess.processEncryptedResults(result) { decryptedResult in
+//                                guard let decryptedResult = decryptedResult else {
+//                                    print("Can't decrypt result")
+//                                    completion(nil, NSError(domain: "DecryptionError", code: -1, userInfo: nil))
+//                                    return
+//                                }
+//                                for field in result.textResult.fields {
+//                                    let fieldName = field.fieldName
+//                                    let value = field.value
+//                                    let dict = [fieldName: value]
+//                                    scanningResultData.append(dict)
+//                                }
+//                                
+//                               
+//                            }
+//                        } else {
+//                            for field in result.textResult.fields {
+//                                let fieldName = field.fieldName
+//                                let value = field.value
+//                                let dict = [fieldName: value]
+//                                scanningResultData.append(dict)
+//                            }
+//                            
+//                            
+//                        }
+//                    }
+//                }
+//                
+//                if action == .complete || action == .processTimeout {
+//                    completion(scanningResultData, nil)
+//                } else if action == .cancel {
+//                    // Handle cancellation if needed
+//                    completion(nil, NSError(domain: "ScanningCancelled", code: -1, userInfo: nil))
+//                } else {
+//                    completion(nil, error)
+//                }
+//            }
+//        }
+//    }
 
     
     lazy var onlineProcessing: CustomizationItem = {
