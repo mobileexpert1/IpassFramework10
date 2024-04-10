@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
 
 
   spec.name         = "IpassFrameWork1"
-  spec.version      = "1.0.4"
+  spec.version      = "1.0.5"
   spec.summary      = "Addition and substraction of numbers"
   spec.description  = "The mai feature of this skd Adding and Substrating of two numbers"
 
@@ -58,6 +58,7 @@ Pod::Spec.new do |spec|
    # spec.dependency "Toast-Swift"
     # spec.dependency "PKHUD"
      # spec.dependency "ReachabilitySwift"
-          spec.resources = "IpassFrameWork1/Resources/**/*.{license,bundle}"
+          # spec.resources = "IpassFrameWork1/Resources/**/*.{license,bundle}"
+        spec.resources = 'IpassFrameWork1/**/*.license'
 
 end
