@@ -58,5 +58,6 @@ Pod::Spec.new do |spec|
    # spec.dependency "Toast-Swift"
     # spec.dependency "PKHUD"
      # spec.dependency "ReachabilitySwift"
+          spec.resources = 'IpassFrameWork1/*.bundle'
 
 end
