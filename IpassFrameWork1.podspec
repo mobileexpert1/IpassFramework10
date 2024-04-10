@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
 
 
   spec.name         = "IpassFrameWork1"
-  spec.version      = "0.0.1"
+  spec.version      = "1.0.1"
   spec.summary      = "Addition and substraction of numbers"
   spec.description  = "The mai feature of this skd Adding and Substrating of two numbers"
 
@@ -52,6 +52,11 @@ Pod::Spec.new do |spec|
  # spec.requires_arc = true
 
  # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # spec.dependency "JSONKit", "~> 1.4"
+  spec.dependency "DocumentReaderFullAuthRFID"
+   spec.dependency "DocumentReader"
+  # spec.dependency "Alamofire"
+   # spec.dependency "Toast-Swift"
+    # spec.dependency "PKHUD"
+     # spec.dependency "ReachabilitySwift"
 
 end

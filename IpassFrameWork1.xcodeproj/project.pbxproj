@@ -7,14 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F9A3EFC91FCF8A79FEA8572 /* Pods_IpassFrameWork1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77A15FA850B860DBA2E81B44 /* Pods_IpassFrameWork1.framework */; };
 		75E325DB2BC67128001375E4 /* IpassFrameWork1.h in Headers */ = {isa = PBXBuildFile; fileRef = 75E325DA2BC67128001375E4 /* IpassFrameWork1.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		75E325E22BC67169001375E4 /* DBDownloading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E325E12BC67169001375E4 /* DBDownloading.swift */; };
+		75E326042BC678B5001375E4 /* DBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326032BC678B5001375E4 /* DBService.swift */; };
+		75E326092BC67937001375E4 /* regula.license in Resources */ = {isa = PBXBuildFile; fileRef = 75E326052BC67937001375E4 /* regula.license */; };
+		75E3260A2BC67937001375E4 /* Certificates.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 75E326062BC67937001375E4 /* Certificates.bundle */; };
+		75E3260B2BC67937001375E4 /* CertificatesTA.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 75E326072BC67937001375E4 /* CertificatesTA.bundle */; };
+		75E3260C2BC67937001375E4 /* CertificatesPA.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 75E326082BC67937001375E4 /* CertificatesPA.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		75E325D72BC67128001375E4 /* IpassFrameWork1.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IpassFrameWork1.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75E325DA2BC67128001375E4 /* IpassFrameWork1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IpassFrameWork1.h; sourceTree = "<group>"; };
 		75E325E12BC67169001375E4 /* DBDownloading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBDownloading.swift; sourceTree = "<group>"; };
+		75E326032BC678B5001375E4 /* DBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBService.swift; sourceTree = "<group>"; };
+		75E326052BC67937001375E4 /* regula.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = regula.license; sourceTree = "<group>"; };
+		75E326062BC67937001375E4 /* Certificates.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Certificates.bundle; sourceTree = "<group>"; };
+		75E326072BC67937001375E4 /* CertificatesTA.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CertificatesTA.bundle; sourceTree = "<group>"; };
+		75E326082BC67937001375E4 /* CertificatesPA.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CertificatesPA.bundle; sourceTree = "<group>"; };
+		77A15FA850B860DBA2E81B44 /* Pods_IpassFrameWork1.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IpassFrameWork1.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		91A120A78EAD50B17D670E6D /* Pods-IpassFrameWork1.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IpassFrameWork1.release.xcconfig"; path = "Target Support Files/Pods-IpassFrameWork1/Pods-IpassFrameWork1.release.xcconfig"; sourceTree = "<group>"; };
+		A6777EB556EC8054F1697E64 /* Pods-IpassFrameWork1.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IpassFrameWork1.debug.xcconfig"; path = "Target Support Files/Pods-IpassFrameWork1/Pods-IpassFrameWork1.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -22,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F9A3EFC91FCF8A79FEA8572 /* Pods_IpassFrameWork1.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +48,8 @@
 			children = (
 				75E325D92BC67128001375E4 /* IpassFrameWork1 */,
 				75E325D82BC67128001375E4 /* Products */,
+				ED611FD5D4A46115F7B46BA3 /* Pods */,
+				A6394A8E2C65AB16BB8175E9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -47,10 +64,32 @@
 		75E325D92BC67128001375E4 /* IpassFrameWork1 */ = {
 			isa = PBXGroup;
 			children = (
+				75E326062BC67937001375E4 /* Certificates.bundle */,
+				75E326082BC67937001375E4 /* CertificatesPA.bundle */,
+				75E326072BC67937001375E4 /* CertificatesTA.bundle */,
+				75E326052BC67937001375E4 /* regula.license */,
 				75E325DA2BC67128001375E4 /* IpassFrameWork1.h */,
 				75E325E12BC67169001375E4 /* DBDownloading.swift */,
+				75E326032BC678B5001375E4 /* DBService.swift */,
 			);
 			path = IpassFrameWork1;
+			sourceTree = "<group>";
+		};
+		A6394A8E2C65AB16BB8175E9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				77A15FA850B860DBA2E81B44 /* Pods_IpassFrameWork1.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ED611FD5D4A46115F7B46BA3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A6777EB556EC8054F1697E64 /* Pods-IpassFrameWork1.debug.xcconfig */,
+				91A120A78EAD50B17D670E6D /* Pods-IpassFrameWork1.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,6 +110,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75E325DE2BC67128001375E4 /* Build configuration list for PBXNativeTarget "IpassFrameWork1" */;
 			buildPhases = (
+				13BF3C9DD298D7FC98E72897 /* [CP] Check Pods Manifest.lock */,
 				75E325D22BC67128001375E4 /* Headers */,
 				75E325D32BC67128001375E4 /* Sources */,
 				75E325D42BC67128001375E4 /* Frameworks */,
@@ -123,10 +163,39 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75E3260C2BC67937001375E4 /* CertificatesPA.bundle in Resources */,
+				75E3260B2BC67937001375E4 /* CertificatesTA.bundle in Resources */,
+				75E326092BC67937001375E4 /* regula.license in Resources */,
+				75E3260A2BC67937001375E4 /* Certificates.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		13BF3C9DD298D7FC98E72897 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IpassFrameWork1-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		75E325D32BC67128001375E4 /* Sources */ = {
@@ -134,6 +203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75E325E22BC67169001375E4 /* DBDownloading.swift in Sources */,
+				75E326042BC678B5001375E4 /* DBService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +337,7 @@
 		};
 		75E325DF2BC67128001375E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A6777EB556EC8054F1697E64 /* Pods-IpassFrameWork1.debug.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -301,6 +372,7 @@
 		};
 		75E325E02BC67128001375E4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 91A120A78EAD50B17D670E6D /* Pods-IpassFrameWork1.release.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
