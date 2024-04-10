@@ -15,58 +15,7 @@ public class StartFullProcess {
     private var selectedScenario: String?
     private var sectionsData: [CustomizationSection] = []
     public var delegate:ScanningResultData?
-    
-//public static func fullProcessScanning(type : Int ,controller:UIViewController) {
-//
-//            let config = DocReader.ScannerConfig()
-//            if(type == 0) {
-//               config.scenario = RGL_SCENARIO_FULL_AUTH   // RGL_SCENARIO_FULL_AUTH //RGL_SCENARIO_FULL_PROCESS
-//            }
-//           else if(type == 1) {
-//                config.scenario = RGL_SCENARIO_CREDIT_CARD
-//            }
-//           else if(type == 2) {
-//                config.scenario = RGL_SCENARIO_MRZ
-//            }
-//            else if(type == 3) {
-//                 config.scenario = RGL_SCENARIO_BARCODE
-//             }
-//
-//    DocReader.shared.showScanner(presenter: controller, config: config) { [self] (action, result, error) in
-//        DispatchQueue.main.async {
-//            print("action" , action)
-////            print("resultOfFullProcessing" , result)
-//            print("error" , error)
-//            if action == .complete || action == .processTimeout {
-//                print("123456789",result?.textResult as Any)
-//
-//                if result?.chipPage != 0  {
-//                    let process = StartFullProcess()
-//                    process.startRFIDReading(presenterClass: controller, opticalResults: result)
-//                } else {
-//                    if ApplicationSetting.shared.isDataEncryptionEnabled {
-//                        StartFullProcess.processEncryptedResults(result!) { decryptedResult in
-//                            guard let results = decryptedResult else {
-//                                print("Can't decrypt result")
-//                                return
-//                            }
-//
-//                            StartFullProcess.presentResults(results)
-//                        }
-//                    } else {
-//                        StartFullProcess.presentResults(result!)
-//
-//                    }
-//                }
-//            } else if action == .cancel {
-//
-//            }
-//        }
-//    }
-//
-//
-//
-//        }
+
     
     public static func fullProcessScanning(type: Int, controller: UIViewController, completion: @escaping ([[String: Any]]?, Error?) -> Void) {
         let config = DocReader.ScannerConfig()
@@ -92,12 +41,27 @@ public class StartFullProcess {
                 var scanningResultData: [[String: Any]] = []
                 
                 if let result = result, action == .complete || action == .processTimeout {
-                    print("123456789", result.textResult as Any)
+//                    print("123456789", result.textResult as Any)
                     
                     if result.chipPage != 0 {
                         // Start RFID reading if necessary
                         let process = StartFullProcess()
-                        process.startRFIDReading(presenterClass: controller, opticalResults: result)
+                        process.startRFIDReading(presenterClass: controller, opticalResults: result) { (result, error) in
+                            if let result = result {
+                                // Handle scanning result data
+                                print("Received scanning result:", result)
+                                completion(result, nil)
+                            } else if let error = error {
+                                // Handle error
+                                print("Error during scanning:", error.localizedDescription)
+                                completion(nil, error)
+                            } else {
+                                // Scanning was canceled
+                                print("Scanning was canceled")
+                                completion(nil, NSError(domain: "DecryptionError", code: -1, userInfo: nil))
+                            }
+                        }
+//                        process.startRFIDReading(presenterClass: controller, opticalResults: result)
                     } else {
                         if ApplicationSetting.shared.isDataEncryptionEnabled {
                             StartFullProcess.processEncryptedResults(result) { decryptedResult in
@@ -140,57 +104,6 @@ public class StartFullProcess {
         }
     }
 
-    
-    
-    public static func startScanning(controller:UIViewController) {
-        
-        
-        
-        
-        
-        let config = DocReader.ScannerConfig()
-        config.scenario = RGL_SCENARIO_FULL_PROCESS
- 
-        DocReader.shared.showScanner(presenter: controller, config: config) { (action, result, error) in
-                            print("action",action)
-            print("result",result)
-            if action == .complete || action == .processTimeout {
-                print(result?.rawResult as Any)
-                if result?.chipPage != 0 {
-                    let process = StartFullProcess()
-                    process.startRFIDReading(presenterClass: controller, opticalResults: result)
-                   
-                }else{
-                    if ApplicationSetting.shared.isDataEncryptionEnabled {
-                       
-                        processEncryptedResults(result!) { decryptedResult in
-                            DispatchQueue.main.async {
-                              
-                                
-                                guard let results = decryptedResult else {
-                                    print("Can't decrypt result")
-                                    return
-                                }
-                                
-                               
-                                
-                                self.presentResults(results)
-                            }
-                        }
-                    } else {
-                        presentResults(result!)
-                    }
-                }
-                
-              
-                               
-             
-                
-            }
-        }
-        
-    
-}
     
     lazy var onlineProcessing: CustomizationItem = {
         let item = CustomizationItem("Online Processing") { [weak self] in
@@ -554,25 +467,44 @@ public class StartFullProcess {
     }
     
     
-    private func startRFIDReading(presenterClass: UIViewController, opticalResults: DocumentReaderResults?) {
+    private func startRFIDReading(presenterClass: UIViewController, opticalResults: DocumentReaderResults?, completion: @escaping ([[String: Any]]?, Error?) -> Void) {
         if ApplicationSetting.shared.useCustomRfidController {
 
         } else {
             DocReader.shared.startRFIDReader(fromPresenter: presenterClass, completion: { [weak self] (action, results, error) in
+                var scannResultData: [[String: Any]] = []
                 guard let self = self else { return }
                 switch action {
                 case .complete:
                     guard let results = results else {
                         return
                     }
+                  
+                    for field in results.textResult.fields {
+                        let fieldName = field.fieldName
+                        let value = field.value
+                        let dict = [fieldName: value]
+                        scannResultData.append(dict)
+                    }
+                    completion(scannResultData, nil)
+                    
                     self.showResultScreen(results)
                 case .cancel:
                     guard let results = opticalResults else {
                         return
                     }
+                  
+                    for field in results.textResult.fields {
+                        let fieldName = field.fieldName
+                        let value = field.value
+                        let dict = [fieldName: value]
+                        scannResultData.append(dict)
+                    }
+                    completion(scannResultData, nil)
                     self.showResultScreen(results)
                 case .error:
                     print("Error")
+                    completion(nil,error)
                 default:
                     break
                 }
@@ -658,6 +590,7 @@ public class StartFullProcess {
             }
         } catch let error as NSError {
             print("Failed to load: \(error.localizedDescription)")
+            
         }
     }
     
