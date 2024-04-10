@@ -64,15 +64,23 @@
 		75E325D92BC67128001375E4 /* IpassFrameWork1 */ = {
 			isa = PBXGroup;
 			children = (
-				75E326062BC67937001375E4 /* Certificates.bundle */,
-				75E326082BC67937001375E4 /* CertificatesPA.bundle */,
-				75E326072BC67937001375E4 /* CertificatesTA.bundle */,
-				75E326052BC67937001375E4 /* regula.license */,
+				75E326232BC6942B001375E4 /* Resources */,
 				75E325DA2BC67128001375E4 /* IpassFrameWork1.h */,
 				75E325E12BC67169001375E4 /* DBDownloading.swift */,
 				75E326032BC678B5001375E4 /* DBService.swift */,
 			);
 			path = IpassFrameWork1;
+			sourceTree = "<group>";
+		};
+		75E326232BC6942B001375E4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				75E326062BC67937001375E4 /* Certificates.bundle */,
+				75E326082BC67937001375E4 /* CertificatesPA.bundle */,
+				75E326072BC67937001375E4 /* CertificatesTA.bundle */,
+				75E326052BC67937001375E4 /* regula.license */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		A6394A8E2C65AB16BB8175E9 /* Frameworks */ = {
