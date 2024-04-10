@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
 
 
   spec.name         = "IpassFrameWork1"
-  spec.version      = "1.0.1"
+  spec.version      = "1.0.2"
   spec.summary      = "Addition and substraction of numbers"
   spec.description  = "The mai feature of this skd Adding and Substrating of two numbers"
 
@@ -32,7 +32,7 @@ Pod::Spec.new do |spec|
 
   spec.source       = { :git => "https://github.com/mobileexpert1/IpassFramework10.git", :tag => "#{spec.version}" }
 
-  spec.source_files  =  "IpassFrameWork1/**/*.{h,m,swift}"
+  spec.source_files  =  "IpassFrameWork1/**/*.{h,m,swift,license,bundle}"
   #spec.exclude_files = "Classes/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
