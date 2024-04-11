@@ -50,13 +50,25 @@ public class StartFullProcess {
                                     return
                                 }
 //                                completion(results.rawResult, nil)
-                                getDocImages(datavalue: docResults ?? DocumentReaderResults())
+                                getDocImages(datavalue: docResults ?? DocumentReaderResults(),completion: {(resuldata, error)in
+                                    if let result = resuldata{
+                                        completion(result, nil)
+                                    }else{
+                                        completion(nil, error)
+                                    }
+                                })
                             case .cancel:
                                 guard let results = docResults else {
                                     return
                                 }
 //                                completion(results.rawResult, nil)
-                                getDocImages(datavalue: docResults ?? DocumentReaderResults())
+                                getDocImages(datavalue: docResults ?? DocumentReaderResults(),completion: {(resuldata, error)in
+                                    if let result = resuldata{
+                                        completion(result, nil)
+                                    }else{
+                                        completion(nil, error)
+                                    }
+                                })
                             case .error:
                                 print("Error")
                                 completion(nil, NSError(domain: "ScanningCancelled", code: -1, userInfo: nil))
@@ -69,7 +81,13 @@ public class StartFullProcess {
                         
                     } else {
 //                        completion(docResults?.rawResult, nil)
-                        getDocImages(datavalue: docResults ?? DocumentReaderResults())
+                        getDocImages(datavalue: docResults ?? DocumentReaderResults(),completion: {(resuldata, error)in
+                            if let result = resuldata{
+                                completion(result, nil)
+                            }else{
+                                completion(nil, error)
+                            }
+                        })
 
                     }
  
@@ -90,7 +108,7 @@ public class StartFullProcess {
     }
 
     
-    private static func getDocImages(datavalue: DocumentReaderResults) {
+    private static func getDocImages(datavalue: DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
         
         var image1 = ""
         var image2 = ""
@@ -105,12 +123,18 @@ public class StartFullProcess {
                     image2 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
                 }
                 let randomNo = generateRandomTwoDigitNumber()
-                faceMatchingApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)")
+                faceMatchingApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
+                    if let result = results{
+                     completion(result, nil)
+                    }else{
+                        completion(nil, error)
+                    }
+                })
             }
            }
     }
  
-    private static func faceMatchingApi(email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String) {
+    private static func faceMatchingApi(email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
         
         let authtoken = "eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI"
         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=\(authtoken)") else {
@@ -149,6 +173,7 @@ public class StartFullProcess {
             // Handle response
             if let error = error {
                 print("Error: \(error)")
+                completion(nil, error)
                 return
             }
 
@@ -159,7 +184,7 @@ public class StartFullProcess {
             if let data = data {
                 if let responseString = String(data: data, encoding: .utf8) {
                     print("Response data: \(responseString)")
-                   
+                    completion(responseString, nil)
                 }
             }
         }
