@@ -96,87 +96,146 @@ public class StartFullProcess {
                 else  if(image2 == "") {
                     image2 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
                 }
-                faceMatchingApi(frontImg: image1, backImg: image2)
+                faceMatchingApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "47")
             }
            }
     }
  
-     
-    private static func faceMatchingApi(frontImg: String,backImg:String) {
-         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI") else {
-             return
-         }
-         
-         var parameters: [String: Any] = [:]
-
-         parameters["email"] = "ipassmobile@yopmail.com"
-         parameters["auth_token"] = UserLocalStore.shared.token
-         parameters["image1"] = frontImg
-         parameters["image2"] = backImg
-         parameters["custEmail"] = "anshul12@gmail.com"
-         parameters["workflow"] = "10032"
-         parameters["sid"] = "46"
-         
-        print("dictData", parameters)
-         // Create JSON data from parameters
-         guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
-             print("Error converting parameters to JSON")
-             return
-         }
-         
-         var request = URLRequest(url: apiURL)
-         request.httpMethod = "POST"
-         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-         request.httpBody = jsonData
-         
-         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-             DispatchQueue.main.async {
-                 // Handle response
-                 if let error = error {
-                     print("Error: \(error.localizedDescription)")
-
-                     return
-                 }
-                 
-                 guard let httpResponse = response as? HTTPURLResponse else {
-                     print("Invalid response")
-
-                     return
-                 }
-                 
-                 let statusCode = httpResponse.statusCode
-                 print("Status code: \(statusCode)")
-                 
-                 if statusCode == 201 {
-                     if let responseData = data {
-                         do {
-                             if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any] {
-                                 print("Response JSON: \(json)")
-                                 
-                                 if let data = json["data"] as? [String: Any],
-                                    let facePercentage = data["facePercentage"] as? Double {
-                                     print("facePercentage: \(facePercentage)")
-                                 
-                                 }
-                                 
-
-                             }
-                         } catch {
-                             print("Error decoding JSON: \(error.localizedDescription)")
-
-                         }
-                     }
-                 } else {
-                     print("Invalid status code: \(statusCode)")
-                     print("error", error?.localizedDescription)
-                 }
-             }
-         }
-         
-         task.resume()
-     }
-
+    private static func faceMatchingApi(email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String) {
+        
+        let authtoken = "eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI"
+        guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=\(authtoken)") else {
+            print("Invalid API URL")
+            return
+        }
+        
+        let parameters: [String: Any] = [
+            "email": email,
+            "auth_token": authToken,
+            "image1": frontImg,
+            "image2": backImg,
+            "custEmail": custEmail,
+            "workflow": workflow,
+            "sid": sid
+        ]
+        print("parameters",parameters)
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: parameters)
+            
+            var request = URLRequest(url: apiURL)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = jsonData
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("Error: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        print("Invalid response")
+                        return
+                    }
+                    
+                    let statusCode = httpResponse.statusCode
+                    print("Status code: \(statusCode)")
+                    
+                    if statusCode == 201 {
+                        if let responseData = data {
+                            do {
+                                if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any] {
+                                    print("Response JSON: \(json)")
+                                    // Process response JSON here
+                                }
+                            } catch {
+                                print("Error decoding JSON: \(error.localizedDescription)")
+                            }
+                        }
+                    } else {
+                        print("Invalid status code: \(statusCode)")
+                    }
+                }
+            }.resume()
+            
+        } catch {
+            print("Error converting parameters to JSON: \(error.localizedDescription)")
+        }
+    }
     
+    
+    
+     
+//    private static func faceMatchingApi(frontImg: String,backImg:String) {
+//         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI") else {
+//             return
+//         }
+//         
+//         var parameters: [String: Any] = [:]
+//
+//         parameters["email"] = "ipassmobile@yopmail.com"
+//         parameters["auth_token"] = UserLocalStore.shared.token
+//         parameters["image1"] = frontImg
+//         parameters["image2"] = backImg
+//         parameters["custEmail"] = "anshul12@gmail.com"
+//         parameters["workflow"] = "10032"
+//         parameters["sid"] = "47"
+//         
+//        print("dictData", parameters)
+//         // Create JSON data from parameters
+//         guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
+//             print("Error converting parameters to JSON")
+//             return
+//         }
+//         
+//         var request = URLRequest(url: apiURL)
+//         request.httpMethod = "POST"
+//         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//         request.httpBody = jsonData
+//         
+//         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+//             DispatchQueue.main.async {
+//                 // Handle response
+//                 if let error = error {
+//                     print("Error: \(error.localizedDescription)")
+//
+//                     return
+//                 }
+//                 
+//                 guard let httpResponse = response as? HTTPURLResponse else {
+//                     print("Invalid response")
+//
+//                     return
+//                 }
+//                 
+//                 let statusCode = httpResponse.statusCode
+//                 print("Status code: \(statusCode)")
+//                 
+//                 if statusCode == 201 {
+//                     if let responseData = data {
+//                         do {
+//                             if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any] {
+//                                 print("Response JSON: \(json)")
+//
+//
+//                             }
+//                         } catch {
+//                             print("Error decoding JSON: \(error.localizedDescription)")
+//
+//                         }
+//                     }
+//                 } else {
+//                     print("Invalid status code: \(statusCode)")
+//                     print("error", error?.localizedDescription)
+//                 }
+//             }
+//         }
+//         
+//         task.resume()
+//     }
+//
+//    
     
 
 
