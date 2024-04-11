@@ -119,50 +119,97 @@ public class StartFullProcess {
             "sid": sid
         ]
         print("parameters",parameters)
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: parameters)
-            
-            var request = URLRequest(url: apiURL)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = jsonData
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    guard let httpResponse = response as? HTTPURLResponse else {
-                        print("Invalid response")
-                        return
-                    }
-                    
-                    let statusCode = httpResponse.statusCode
-                    print("Status code: \(statusCode)")
-                    
-                    if statusCode == 201 {
-                        if let responseData = data {
-                            do {
-                                if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any] {
-                                    print("Response JSON: \(json)")
-                                    // Process response JSON here
-                                }
-                            } catch {
-                                print("Error decoding JSON: \(error.localizedDescription)")
-                            }
-                        }
-                    } else {
-                        print("Invalid status code: \(statusCode)")
-                    }
-                }
-            }.resume()
-            
-        } catch {
-            print("Error converting parameters to JSON: \(error.localizedDescription)")
+        
+        // Convert JSON to Data
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
+            print("Failed to serialize JSON data")
+            return
         }
+
+        // Create URLRequest
+        var request = URLRequest(url: apiURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+
+        // Create URLSession
+        let session = URLSession.shared
+
+        // Create URLSession data task
+        let task = session.dataTask(with: request) { data, response, error in
+            // Handle response
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse {
+                print("Status code: \(httpResponse.statusCode)")
+            }
+
+            if let data = data {
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("Response data: \(responseString)")
+                   
+                }
+            }
+        }
+
+        // Start the data task
+        task.resume()
+        
+        
+        
+        
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: parameters)
+//            
+//            var request = URLRequest(url: apiURL)
+//            request.httpMethod = "POST"
+//            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//            request.httpBody = jsonData
+//            
+//            URLSession.shared.dataTask(with: request) { data, response, error in
+//                DispatchQueue.main.async {
+//                    if let error = error {
+//                        print("Error: \(error.localizedDescription)")
+//                        return
+//                    }
+//                    
+//                    guard let httpResponse = response as? HTTPURLResponse else {
+//                        print("Invalid response")
+//                        return
+//                    }
+//                    
+//                    let statusCode = httpResponse.statusCode
+//                    print("Status code: \(statusCode)")
+//                    
+//                    if statusCode == 201 {
+//                        if let responseData = data {
+//                            do {
+//                                if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any] {
+//                                    print("Response JSON: \(json)")
+//                                    // Process response JSON here
+//                                }
+//                            } catch {
+//                                print("Error decoding JSON: \(error.localizedDescription)")
+//                            }
+//                        }
+//                    } else {
+//                        print("Invalid status code: \(statusCode)")
+//                    }
+//                }
+//            }.resume()
+//            
+//        } catch {
+//            print("Error converting parameters to JSON: \(error.localizedDescription)")
+//        }
     }
+    
+    
+
+
+    
     
     
     

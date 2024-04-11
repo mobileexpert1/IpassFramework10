@@ -14,8 +14,24 @@
             filePath = "IpassFrameWork1/FullProcess.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "157"
-            endingLineNumber = "157"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
+            landmarkName = "callAPIs()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A7779F8F-D542-499D-904F-CC008C80899C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "IpassFrameWork1/FullProcess.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
             landmarkName = "faceMatchingApi(email:authToken:frontImg:backImg:custEmail:workflow:sid:)"
             landmarkType = "7">
          </BreakpointContent>
