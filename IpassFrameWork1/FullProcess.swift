@@ -9,6 +9,7 @@ import Foundation
 import DocumentReader
 import UIKit
 
+
 public class StartFullProcess {
     public init() {}
  
@@ -46,14 +47,17 @@ public class StartFullProcess {
                                 guard let results = results else {
                                     return
                                 }
-                                completion(results.rawResult, nil)
+//                                completion(results.rawResult, nil)
+                                getDocImages(datavalue: docResults ?? DocumentReaderResults())
                             case .cancel:
                                 guard let results = docResults else {
                                     return
                                 }
-                                completion(results.rawResult, nil)
+//                                completion(results.rawResult, nil)
+                                getDocImages(datavalue: docResults ?? DocumentReaderResults())
                             case .error:
                                 print("Error")
+                                completion(nil, NSError(domain: "ScanningCancelled", code: -1, userInfo: nil))
                             default:
                                 break
                             }
@@ -62,114 +66,116 @@ public class StartFullProcess {
                         
                         
                     } else {
-                        completion(docResults?.rawResult, nil)
+//                        completion(docResults?.rawResult, nil)
+                        getDocImages(datavalue: docResults ?? DocumentReaderResults())
+
                     }
-                    
-            
-                
-              
-                
-                
-                
-            
-              
-                               
-             
-                
+ 
             }
             else  if action == .cancel  {
-               
+                completion(nil, error)
             }
         }
       
     }
     
-//    public static func fullProcessScanning(type: Int, controller: UIViewController, completion: @escaping ([[String: Any]]?, Error?) -> Void) {
-//        let config = DocReader.ScannerConfig()
-//        
-//        switch type {
-//        case 0:
-//            config.scenario = RGL_SCENARIO_FULL_AUTH
-//        case 1:
-//            config.scenario = RGL_SCENARIO_CREDIT_CARD
-//        case 2:
-//            config.scenario = RGL_SCENARIO_MRZ
-//        case 3:
-//            config.scenario = RGL_SCENARIO_BARCODE
-//        default:
-//            config.scenario = RGL_SCENARIO_FULL_AUTH
-//        }
-//        
-//        DocReader.shared.showScanner(presenter: controller, config: config) { (action, result, error) in
-//            DispatchQueue.main.async {
-//                print("action", action)
-//                print("error", error as Any)
-//                
-//                var scanningResultData: [[String: Any]] = []
-//                
-//                if let result = result, action == .complete || action == .processTimeout {
-////                    print("123456789", result.textResult as Any)
-//                    
-//                    if result.chipPage != 0 {
-//                        // Start RFID reading if necessary
-//                        let process = StartFullProcess()
-//                        process.startRFIDReading(presenterClass: controller, opticalResults: result) { (result, error) in
-//                            if let result = result {
-//                                // Handle scanning result data
-//                                print("Received scanning result:", result)
-//                                completion(result, nil)
-//                            } else if let error = error {
-//                                // Handle error
-//                                print("Error during scanning:", error.localizedDescription)
-//                                completion(nil, error)
-//                            } else {
-//                                // Scanning was canceled
-//                                print("Scanning was canceled")
-//                                completion(nil, NSError(domain: "DecryptionError", code: -1, userInfo: nil))
-//                            }
-//                        }
-////                        process.startRFIDReading(presenterClass: controller, opticalResults: result)
-//                    } else {
-//                        if ApplicationSetting.shared.isDataEncryptionEnabled {
-//                            StartFullProcess.processEncryptedResults(result) { decryptedResult in
-//                                guard let decryptedResult = decryptedResult else {
-//                                    print("Can't decrypt result")
-//                                    completion(nil, NSError(domain: "DecryptionError", code: -1, userInfo: nil))
-//                                    return
-//                                }
-//                                for field in result.textResult.fields {
-//                                    let fieldName = field.fieldName
-//                                    let value = field.value
-//                                    let dict = [fieldName: value]
-//                                    scanningResultData.append(dict)
-//                                }
-//                                
-//                               
-//                            }
-//                        } else {
-//                            for field in result.textResult.fields {
-//                                let fieldName = field.fieldName
-//                                let value = field.value
-//                                let dict = [fieldName: value]
-//                                scanningResultData.append(dict)
-//                            }
-//                            
-//                            
-//                        }
-//                    }
-//                }
-//                
-//                if action == .complete || action == .processTimeout {
-//                    completion(scanningResultData, nil)
-//                } else if action == .cancel {
-//                    // Handle cancellation if needed
-//                    completion(nil, NSError(domain: "ScanningCancelled", code: -1, userInfo: nil))
-//                } else {
-//                    completion(nil, error)
-//                }
-//            }
-//        }
-//    }
+    
+    private static func getDocImages(datavalue: DocumentReaderResults) {
+        
+        var image1 = ""
+        var image2 = ""
+        
+        
+        for i in (0 ..<  datavalue.graphicResult.fields.count) {
+            if(datavalue.graphicResult.fields[i].fieldName.lowercased() == "document image") {
+                if(image1 == "") {
+                    image1 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
+                }
+                else  if(image2 == "") {
+                    image2 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
+                }
+                faceMatchingApi(frontImg: image1, backImg: image2)
+            }
+           }
+    }
+ 
+     
+    private static func faceMatchingApi(frontImg: String,backImg:String) {
+         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI") else {
+             return
+         }
+         
+         var parameters: [String: Any] = [:]
+
+         parameters["email"] = "ipassmobile@yopmail.com"
+         parameters["auth_token"] = UserLocalStore.shared.token
+         parameters["image1"] = frontImg
+         parameters["image2"] = backImg
+         parameters["custEmail"] = "anshul12@gmail.com"
+         parameters["workflow"] = "10032"
+         parameters["sid"] = "46"
+         
+         // Create JSON data from parameters
+         guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
+             print("Error converting parameters to JSON")
+             return
+         }
+         
+         var request = URLRequest(url: apiURL)
+         request.httpMethod = "POST"
+         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+         request.httpBody = jsonData
+         
+         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+             DispatchQueue.main.async {
+                 // Handle response
+                 if let error = error {
+                     print("Error: \(error.localizedDescription)")
+
+                     return
+                 }
+                 
+                 guard let httpResponse = response as? HTTPURLResponse else {
+                     print("Invalid response")
+
+                     return
+                 }
+                 
+                 let statusCode = httpResponse.statusCode
+                 print("Status code: \(statusCode)")
+                 
+                 if statusCode == 201 {
+                     if let responseData = data {
+                         do {
+                             if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any] {
+                                 print("Response JSON: \(json)")
+                                 
+                                 if let data = json["data"] as? [String: Any],
+                                    let facePercentage = data["facePercentage"] as? Double {
+                                     print("facePercentage: \(facePercentage)")
+                                 
+                                 }
+                                 
+
+                             }
+                         } catch {
+                             print("Error decoding JSON: \(error.localizedDescription)")
+
+                         }
+                     }
+                 } else {
+                     print("Invalid status code: \(statusCode)")
+
+                 }
+             }
+         }
+         
+         task.resume()
+     }
+
+    
+    
+
 
     
     lazy var onlineProcessing: CustomizationItem = {
@@ -786,4 +792,26 @@ public static func showCameraViewControllerForMrz(controller:UIViewController) {
 
 public protocol ScanningResultData:AnyObject{
     func getScanningData(result:[String:Any])
+}
+
+
+private class ImageRequest {
+    var image1: String = ""
+    var image2: String = ""
+    
+    func isEmpty() -> Bool {
+        return image1.isEmpty
+    }
+}
+extension UIImage {
+    func toBase64() -> String? {
+        // Convert UIImage to Data
+        guard let imageData = self.pngData() else {
+            return nil
+        }
+        
+        // Convert Data to base64 string
+        let base64String = imageData.base64EncodedString(options: [])
+        return base64String
+    }
 }

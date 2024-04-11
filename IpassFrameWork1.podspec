@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
 
 
   spec.name         = "IpassFrameWork1"
-  spec.version      = "1.0.8"
+  spec.version      = "1.0.9"
   spec.summary      = "Addition and substraction of numbers"
   spec.description  = "The mai feature of this skd Adding and Substrating of two numbers"
 
@@ -42,7 +42,7 @@ Pod::Spec.new do |spec|
 
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
-    spec.swift_version = '4.0'
+    spec.swift_version = '5.0'
   # spec.framework  = "SomeFramework"
   # spec.frameworks = "SomeFramework", "AnotherFramework"
 

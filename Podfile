@@ -7,11 +7,8 @@ target 'IpassFrameWork1' do
 
   pod 'DocumentReaderFullAuthRFID'
   pod 'DocumentReader'
-#  pod 'Alamofire'
-#  pod 'Toast-Swift'
-#  pod 'PKHUD'
-#  pod 'ReachabilitySwift'
 
+ #pod 'amplify-swift', :path => 'https://github.com/aws-amplify/amplify-swift'
 
   # Pods for IpassFrameWork1
 

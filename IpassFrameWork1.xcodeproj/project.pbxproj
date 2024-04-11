@@ -32,6 +32,7 @@
 		75E326B32BC6B945001375E4 /* ResultType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326A52BC6B945001375E4 /* ResultType+Extensions.swift */; };
 		75E326B42BC6B945001375E4 /* RFIDAccessControlProcedureType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326A62BC6B945001375E4 /* RFIDAccessControlProcedureType+Extensions.swift */; };
 		75E326D22BC6C4D6001375E4 /* ApiHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E326D12BC6C4D6001375E4 /* ApiHandler.swift */; };
+		75E3270C2BC7E68D001375E4 /* UserlocalStoreClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E3270B2BC7E68D001375E4 /* UserlocalStoreClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		75E326A52BC6B945001375E4 /* ResultType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResultType+Extensions.swift"; sourceTree = "<group>"; };
 		75E326A62BC6B945001375E4 /* RFIDAccessControlProcedureType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RFIDAccessControlProcedureType+Extensions.swift"; sourceTree = "<group>"; };
 		75E326D12BC6C4D6001375E4 /* ApiHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiHandler.swift; sourceTree = "<group>"; };
+		75E3270B2BC7E68D001375E4 /* UserlocalStoreClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserlocalStoreClass.swift; sourceTree = "<group>"; };
 		77A15FA850B860DBA2E81B44 /* Pods_IpassFrameWork1.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IpassFrameWork1.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91A120A78EAD50B17D670E6D /* Pods-IpassFrameWork1.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IpassFrameWork1.release.xcconfig"; path = "Target Support Files/Pods-IpassFrameWork1/Pods-IpassFrameWork1.release.xcconfig"; sourceTree = "<group>"; };
 		A6777EB556EC8054F1697E64 /* Pods-IpassFrameWork1.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IpassFrameWork1.debug.xcconfig"; path = "Target Support Files/Pods-IpassFrameWork1/Pods-IpassFrameWork1.debug.xcconfig"; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				75E326242BC69D38001375E4 /* FullProcess.swift */,
 				75E3267A2BC6A429001375E4 /* ApplicationSetting.swift */,
 				75E326D12BC6C4D6001375E4 /* ApiHandler.swift */,
+				75E3270B2BC7E68D001375E4 /* UserlocalStoreClass.swift */,
 			);
 			path = IpassFrameWork1;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 				75E325E22BC67169001375E4 /* DBDownloading.swift in Sources */,
 				75E326AD2BC6B945001375E4 /* DocReaderFrame+Extensions.swift in Sources */,
 				75E326AC2BC6B945001375E4 /* DocFormat+Extensions.swift in Sources */,
+				75E3270C2BC7E68D001375E4 /* UserlocalStoreClass.swift in Sources */,
 				75E326B12BC6B945001375E4 /* MRZFormat+Extensions.swift in Sources */,
 				75E326AF2BC6B945001375E4 /* LCID+Extensions.swift in Sources */,
 				75E326042BC678B5001375E4 /* DBService.swift in Sources */,
