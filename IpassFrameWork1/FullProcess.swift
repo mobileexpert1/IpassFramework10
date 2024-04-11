@@ -117,6 +117,7 @@ public class StartFullProcess {
          parameters["workflow"] = "10032"
          parameters["sid"] = "46"
          
+        print("dictData", parameters)
          // Create JSON data from parameters
          guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
              print("Error converting parameters to JSON")
@@ -167,7 +168,7 @@ public class StartFullProcess {
                      }
                  } else {
                      print("Invalid status code: \(statusCode)")
-
+                     print("error", error?.localizedDescription)
                  }
              }
          }
