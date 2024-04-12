@@ -21,7 +21,8 @@ public class APIHandler {
             "email": "ipassmobile@yopmail.com",
             "password": "Admin@123#"
         ]
-
+        print("loginPostApi",apiURL)
+        print("login parameters",parameters)
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
         } catch let error {

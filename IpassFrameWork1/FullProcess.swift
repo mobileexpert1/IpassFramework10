@@ -126,7 +126,7 @@ public class StartFullProcess {
            }
         
         let randomNo = generateRandomTwoDigitNumber()
-        faceMatchingApi(scannResultData: datavalue, email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
+        ocrPostApi(scannResultData: datavalue, email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
             if let result = results{
              completion(result, nil)
             }else{
@@ -135,7 +135,7 @@ public class StartFullProcess {
         })
     }
  
-    private static func faceMatchingApi(scannResultData:DocumentReaderResults, email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
+    private static func ocrPostApi(scannResultData:DocumentReaderResults, email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
         
         let authtoken = "eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI"
         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=\(authtoken)") else {
@@ -152,7 +152,8 @@ public class StartFullProcess {
             "workflow": workflow,
             "sid": sid
         ]
-        print("parameters",parameters)
+        print("ocrPostApi",apiURL)
+        print("ocr parameters",parameters)
         
         // Convert JSON to Data
         guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
@@ -184,7 +185,7 @@ public class StartFullProcess {
 
             if let data = data {
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("Response data: \(responseString)")
+                    print("Ocr Response data: \(responseString)")
                     completion(responseString, nil)
                     nfcPostApi(results: scannResultData)
                     
@@ -206,9 +207,10 @@ public class StartFullProcess {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         let parameters: [String: Any] = [
-            "email": results.rawResult
+            "res": results.rawResult
         ]
-
+        print("nfcPostApi",apiURL)
+        print("nfc parameters",parameters)
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
         } catch let error {
