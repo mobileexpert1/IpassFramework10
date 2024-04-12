@@ -71,7 +71,7 @@ public class StartFullProcess {
                                 })
                             case .error:
                                 print("Error")
-                                completion(nil, NSError(domain: "ScanningCancelled", code: -1, userInfo: nil))
+                                completion(nil, error)
                             default:
                                 break
                             }
