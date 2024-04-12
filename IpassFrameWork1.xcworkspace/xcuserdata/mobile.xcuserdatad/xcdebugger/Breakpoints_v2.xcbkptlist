@@ -14,9 +14,25 @@
             filePath = "IpassFrameWork1/FullProcess.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
-            landmarkName = "ocrPostApi(scannResultData:email:authToken:frontImg:backImg:custEmail:workflow:sid:completion:)"
+            startingLineNumber = "209"
+            endingLineNumber = "209"
+            landmarkName = "ocrPostApi(email:authToken:frontImg:backImg:custEmail:workflow:sid:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C35D9479-3580-4013-A467-B7C413BB7404"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "IpassFrameWork1/FullProcess.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "240"
+            endingLineNumber = "240"
+            landmarkName = "nfcPostApi(results:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -103,8 +103,8 @@ public class StartFullProcess {
     
     private static func generateRandomTwoDigitNumber() -> Int {
         let lowerBound = 10
-        let upperBound = 99
-        return Int(arc4random_uniform(UInt32(upperBound - lowerBound + 1))) + lowerBound
+        let upperBound = 999
+        return Int(arc4random_uniform(UInt32((upperBound - lowerBound + 1)))) + lowerBound
     }
 
     
@@ -126,8 +126,29 @@ public class StartFullProcess {
            }
         
         let randomNo = generateRandomTwoDigitNumber()
-        ocrPostApi(scannResultData: datavalue, email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
+        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
             if let result = results{
+                
+                DispatchQueue.global().async {
+                    nfcPostApi(results: datavalue, completion:{(resultdata, error) in
+                        if let result = resultdata{
+                            
+                            DispatchQueue.global().async {
+                                amlPostApi(completion: {(resultdata, error) in })
+                                if let resultdata = resultdata{
+                                    completion(resultdata, nil)
+                                }else{
+                                    completion(nil, error)
+                                }
+                            }
+                            
+                        }else{
+                            completion(nil, error)
+                        }
+                        
+                    })
+                }
+                
              completion(result, nil)
             }else{
                 completion(nil, error)
@@ -135,7 +156,7 @@ public class StartFullProcess {
         })
     }
  
-    private static func ocrPostApi(scannResultData:DocumentReaderResults, email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
+    private static func ocrPostApi( email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
         
         let authtoken = "eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI"
         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=\(authtoken)") else {
@@ -175,7 +196,7 @@ public class StartFullProcess {
             // Handle response
             guard let error = error else{
                 print("Error: \(String(describing: error))")
-                completion(nil, error)
+               completion(nil, error)
                 return
             }
 
@@ -186,9 +207,7 @@ public class StartFullProcess {
             if let data = data {
                 if let responseString = String(data: data, encoding: .utf8) {
                     print("Ocr Response data: \(responseString)")
-                    completion(responseString, nil)
-                    nfcPostApi(results: scannResultData)
-                    
+                   completion(responseString, nil)
                 }
             }
         }
@@ -199,7 +218,7 @@ public class StartFullProcess {
     
     
 
-    private static func nfcPostApi(results:DocumentReaderResults){
+    private static func nfcPostApi(results:DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/nfc/data/post") else { return }
 
         var request = URLRequest(url: apiURL)
@@ -231,12 +250,15 @@ public class StartFullProcess {
                 do {
                     if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         print("Response NFC Api-=-=",json)
+                     
+                        completion("\(json)", nil)
 
                     } else {
                         print("Failed to parse JSON response")
                     }
                 } catch let error {
                     print("Error parsing JSON response: \(error.localizedDescription)")
+                    completion(nil, error)
                 }
             } else {
                 print("Unexpected status code: \(status)")
@@ -246,6 +268,61 @@ public class StartFullProcess {
         task.resume()
     }
 
+    private static func amlPostApi(completion: @escaping (String?, Error?) -> Void){
+        guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/aml/manual?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI") else { return }
+
+        var request = URLRequest(url: apiURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let parameters: [String: Any] = [
+            "email": "ipassmobile@yopmail.com",
+            "auth_token":UserLocalStore.shared.token,
+            "entity_name":"ankit",
+            "fuzLevel":"0",
+            "sid":"",
+            "custEmail":"anuj12@gmail.com"
+        ]
+        print("nfcPostApi",apiURL)
+        print("nfc parameters",parameters)
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+        } catch let error {
+            print("Error serializing parameters: \(error.localizedDescription)")
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
+                print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            let status = response.statusCode
+            print("Response status code: \(status)")
+
+            if status == 200 {
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        print("Response NFC Api-=-=",json)
+                        completion("\(json)", nil)
+                    } else {
+                        print("Failed to parse JSON response")
+                    }
+                } catch let error {
+                    print("Error parsing JSON response: \(error.localizedDescription)")
+                    completion(nil, error)
+                }
+            } else {
+                print("Unexpected status code: \(status)")
+            }
+        }
+
+        task.resume()
+    }
+
+    
+    
     
     lazy var onlineProcessing: CustomizationItem = {
         let item = CustomizationItem("Online Processing") { [weak self] in
