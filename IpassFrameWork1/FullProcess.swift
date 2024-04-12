@@ -139,7 +139,15 @@ public class StartFullProcess {
 
         ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: randomNo) { (results, error) in
             if let result = results {
-              completion(result, nil)
+             saveDataPostApi(random: randomNo, results: datavalue, completion: {
+                ( resultdata, error) in
+                 if let result = resultdata{
+                     completion(result, nil)
+                 }else{
+                     completion(nil, error)
+                 }
+                 
+             })
             } else {
                 completion(nil, error)
             }
@@ -251,6 +259,61 @@ public class StartFullProcess {
                     if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         print("Response NFC Api-=-=",json)
                      
+                        completion("\(json)", nil)
+
+                    } else {
+                        print("Failed to parse JSON response")
+                    }
+                } catch let error {
+                    print("Error parsing JSON response: \(error.localizedDescription)")
+                    completion(nil, error)
+                }
+            } else {
+                print("Unexpected status code: \(status)")
+            }
+        }
+
+        task.resume()
+    }
+    
+    
+    
+    private static func saveDataPostApi(random:String,results:DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
+        guard let apiURL = URL(string: "https://ipassplus.csdevhub.com/api/v1/ipass/sdk/data/save") else { return }
+
+        var request = URLRequest(url: apiURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let dict:[String:Any] = [:]
+        let parameters: [String: Any] = [
+            "email": "ipassmobile@yopmail.com",
+            "regulaDat": results.rawResult,
+            "livenessdata": dict,
+            "randomid": random
+        ]
+        
+        print("nfcPostApi",apiURL)
+        print("nfc parameters",parameters)
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+        } catch let error {
+            print("Error serializing parameters: \(error.localizedDescription)")
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
+                print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            let status = response.statusCode
+            print("Response status code: \(status)")
+
+            if status == 200 {
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        print("Response save data Api-=-=",json)
                         completion("\(json)", nil)
 
                     } else {
