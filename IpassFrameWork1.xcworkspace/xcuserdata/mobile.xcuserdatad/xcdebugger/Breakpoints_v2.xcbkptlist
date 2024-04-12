@@ -32,7 +32,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "240"
             endingLineNumber = "240"
-            landmarkName = "ocrPostApi(email:authToken:frontImg:backImg:custEmail:workflow:sid:completion:)"
+            landmarkName = "nfcPostApi(results:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

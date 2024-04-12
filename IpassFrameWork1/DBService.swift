@@ -10,7 +10,7 @@ import DocumentReader
 
 
 final class DocumentReaderService {
-    let kRegulaLicenseFile = "Ipass.license"
+    let kRegulaLicenseFile = "regula.license"
     let kRegulaDatabaseId = "Full"
     
     enum State {
