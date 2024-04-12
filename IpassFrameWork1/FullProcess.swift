@@ -162,14 +162,15 @@ public class StartFullProcess {
     
     private static func saveDataPostApi(random:String,results:DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
         guard let apiURL = URL(string: "https://ipassplus.csdevhub.com/api/v1/ipass/sdk/data/save") else { return }
-
+       let jsondata = convertStringToJSON(results.rawResult)
+        
         var request = URLRequest(url: apiURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let dict:[String:Any] = [:]
         let parameters: [String: Any] = [
             "email": "ipassmobile@yopmail.com",
-            "regulaDat": results.rawResult,
+            "regulaDat": jsondata ?? "",
             "livenessdata": dict,
             "randomid": random
         ]
@@ -211,6 +212,24 @@ public class StartFullProcess {
         }
 
         task.resume()
+    }
+
+    
+   private static func convertStringToJSON(_ jsonString: String) -> Any? {
+        // Convert the string to Data
+        guard let jsonData = jsonString.data(using: .utf8) else {
+            print("Failed to convert string to data")
+            return nil
+        }
+        
+        // Use JSONSerialization to parse the data into a JSON object (Dictionary or Array)
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: [])
+            return jsonObject
+        } catch {
+            print("Error converting JSON data: \(error)")
+            return nil
+        }
     }
 
     
