@@ -46,6 +46,7 @@ public class APIHandler {
                         if let user = json["user"] as? [String: Any] {
                             if let email = user["email"] as? String, let token = user["token"] as? String {
                                 UserLocalStore.shared.token = token
+                                createSessionAPI(token: token)
                             } else {
                                 print("Email or token not found in user dictionary")
                             }
@@ -66,68 +67,66 @@ public class APIHandler {
         task.resume()
     }
 
-    
 
-
+       private static func createSessionAPI(token: String) {
+           let urlString = "https://plusapi.ipass-mena.com/api/v1/ipass/plus/face/session/create?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI"
     
+           guard let apiURL = URL(string: urlString) else { return }
     
-//        func createSessionAPI(token: String) {
-//           let urlString = "https://plusapi.ipass-mena.com/api/v1/ipass/plus/face/session/create?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI"
-//    
-//           guard let apiURL = URL(string: urlString) else { return }
-//    
-//           // Prepare the request body
-//           let parameters: [String: Any] = [
-//               "email": "ipassmobile@yopmail.com",
-//               "auth_token": token
-//           ]
-//    
-//           guard let requestBody = try? JSONSerialization.data(withJSONObject: parameters) else {
-//               print("Failed to serialize parameters")
-//               return
-//           }
-//    
-//           var request = URLRequest(url: apiURL)
-//           request.httpMethod = "POST"
-//           request.httpBody = requestBody
-//           request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//    
-//           let task = URLSession.shared.dataTask(with: request) { data, response, error in
-//               if let error = error {
-//                   print("Error: \(error.localizedDescription)")
-//                   return
-//               }
-//    
-//               guard let httpResponse = response as? HTTPURLResponse else {
-//                   print("Invalid response")
-//                   return
-//               }
-//    
-//               let statusCode = httpResponse.statusCode
-//               if statusCode == 200 {
-//                   if let responseData = data {
-//                       do {
-//                           let jsonResponse = try JSONSerialization.jsonObject(with: responseData, options: [])
-//                           print("Response:", jsonResponse)
-////                           self.startCamera()
-//                          //sessionIdValue
-//                       } catch {
-//                           print("Failed to parse response:", error.localizedDescription)
-//                       }
-//                   } else {
-//                       print("Empty response data")
-//                   }
-//               } else {
-//                   print("HTTP status code: \(statusCode)")
-//                   if let responseData = data {
-//                       let responseString = String(data: responseData, encoding: .utf8)
-//                       print("Response:", responseString ?? "")
-//                   }
-//               }
-//           }
-//    
-//           task.resume()
-//       }
+           // Prepare the request body
+           let parameters: [String: Any] = [
+               "email": "ipassmobile@yopmail.com",
+               "auth_token": token
+           ]
+           print("sessionPostApi",apiURL)
+           print("session parameters",parameters)
+           
+           guard let requestBody = try? JSONSerialization.data(withJSONObject: parameters) else {
+               print("Failed to serialize parameters")
+               return
+           }
+    
+           var request = URLRequest(url: apiURL)
+           request.httpMethod = "POST"
+           request.httpBody = requestBody
+           request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+           let task = URLSession.shared.dataTask(with: request) { data, response, error in
+               if let error = error {
+                   print("Error: \(error.localizedDescription)")
+                   return
+               }
+    
+               guard let httpResponse = response as? HTTPURLResponse else {
+                   print("Invalid response")
+                   return
+               }
+    
+               let statusCode = httpResponse.statusCode
+               if statusCode == 200 {
+                   if let responseData = data {
+                       do {
+                           let jsonResponse = try JSONSerialization.jsonObject(with: responseData, options: [])
+                           print("Response:", jsonResponse)
+//                           self.startCamera()
+                          //sessionIdValue
+                       } catch {
+                           print("Failed to parse response:", error.localizedDescription)
+                       }
+                   } else {
+                       print("Empty response data")
+                   }
+               } else {
+                   print("HTTP status code: \(statusCode)")
+                   if let responseData = data {
+                       let responseString = String(data: responseData, encoding: .utf8)
+                       print("Response:", responseString ?? "")
+                   }
+               }
+           }
+    
+           task.resume()
+       }
        
     
     
