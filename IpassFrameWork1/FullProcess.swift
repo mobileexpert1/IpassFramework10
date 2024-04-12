@@ -105,22 +105,24 @@ public class StartFullProcess {
     
     
     
-    private static func generateRandomTwoDigitNumber() -> Int {
+    private static func generateRandomTwoDigitNumber() -> String {
         let lowerBound = 10
-        let upperBound = 999
-        return Int(arc4random_uniform(UInt32((upperBound - lowerBound + 1)))) + lowerBound
+        let upperBound = 999999999
+        
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        
+        var randStr =  String((0..<10).map{ _ in letters.randomElement()! })
+        
+        
+        var randomValue = String(Int(arc4random_uniform(UInt32((upperBound - lowerBound + 1)))) + lowerBound)
+        
+        return randomValue + randStr
     }
 
     private static func getDocImages(datavalue: DocumentReaderResults, completion: @escaping (String?, Error?) -> Void) {
-        let dispatchGroup = DispatchGroup()
-        var ocrResult: String?
-        var nfcResult: String?
-        var amlResult: String?
-        
-        
+
         var image1 = ""
         var image2 = ""
-        
         
         for i in (0 ..<  datavalue.graphicResult.fields.count) {
             if(datavalue.graphicResult.fields[i].fieldName.lowercased() == "document image") {
@@ -134,98 +136,25 @@ public class StartFullProcess {
            }
         
         let randomNo = generateRandomTwoDigitNumber()
-        
-        // API Call 1: OCR Post
-        dispatchGroup.enter()
-        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)") { (results, error) in
+
+        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: randomNo) { (results, error) in
             if let result = results {
-                ocrResult = result
+              completion(result, nil)
             } else {
                 completion(nil, error)
             }
-            dispatchGroup.leave()
         }
         
-        // API Call 2: NFC Post
-        dispatchGroup.enter()
-        nfcPostApi(results: datavalue) { (result, error) in
-            if let result = result {
-                nfcResult = result
-            } else {
-                completion(nil, error)
-            }
-            dispatchGroup.leave()
-        }
-        
-        // API Call 3: AML Post
-        dispatchGroup.enter()
-        amlPostApi(sid: "\(randomNo)") { (result, error) in
-            if let result = result {
-                amlResult = result
-            } else {
-                completion(nil, error)
-            }
-            dispatchGroup.leave()
-        }
-        
-        // Notify completion when all API calls are finished
-        dispatchGroup.notify(queue: .main) {
-            // Check if all results are available
-            if let ocrResult = ocrResult, let nfcResult = nfcResult, let amlResult = amlResult {
-                completion(amlResult, nil) // Return the last API response as the completion result
-            } else {
-                completion(nil, NSError(domain: "APIError", code: -1, userInfo: nil))
-            }
-        }
+
     }
 
     
+   private func randomStringGenerator(length: Int) -> String {
+      let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+      return String((0..<length).map{ _ in letters.randomElement()! })
+    }
     
-    
-//    private static func getDocImages(datavalue: DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
-//
-//        var image1 = ""
-//        var image2 = ""
-//        
-//        
-//        for i in (0 ..<  datavalue.graphicResult.fields.count) {
-//            if(datavalue.graphicResult.fields[i].fieldName.lowercased() == "document image") {
-//                if(image1 == "") {
-//                    image1 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
-//                }
-//                else  if(image2 == "") {
-//                    image2 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
-//                }
-//            }
-//           }
-//        
-//        let randomNo = generateRandomTwoDigitNumber()
-//        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
-//            if let result = results{
-//
-//                    nfcPostApi(results: datavalue, completion:{(resultdata, error) in
-//                        if let result = resultdata{
-//                            
-//                                amlPostApi(completion: {(resultdata, error) in })
-//                                if let resultdata = resultdata{
-//                                    completion(resultdata, nil)
-//                                }else{
-//                                    completion(nil, error)
-//                                }
-//                         
-//                            
-//                        }else{
-//                            completion(nil, error)
-//                        }
-//                        
-//                    })
-//                
-//             completion(result, nil)
-//            }else{
-//                completion(nil, error)
-//            }
-//        })
-//    }
+
  
     private static func ocrPostApi( email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
         
@@ -339,61 +268,6 @@ public class StartFullProcess {
         task.resume()
     }
 
-    private static func amlPostApi(sid:String,completion: @escaping (String?, Error?) -> Void){
-        guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/aml/manual?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI") else { return }
-
-        var request = URLRequest(url: apiURL)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let parameters: [String: Any] = [
-            "email": "ipassmobile@yopmail.com",
-            "auth_token":UserLocalStore.shared.token,
-            "entity_name":"ankit",
-            "fuzLevel":"0",
-            "sid":sid,
-            "custEmail":"anuj12@gmail.com"
-        ]
-        print("nfcPostApi",apiURL)
-        print("nfc parameters",parameters)
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
-        } catch let error {
-            print("Error serializing parameters: \(error.localizedDescription)")
-            return
-        }
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
-                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-
-            let status = response.statusCode
-            print("Response status code: \(status)")
-
-            if status == 200 {
-                do {
-                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        print("Response NFC Api-=-=",json)
-                        completion("\(json)", nil)
-                    } else {
-                        print("Failed to parse JSON response")
-                    }
-                } catch let error {
-                    print("Error parsing JSON response: \(error.localizedDescription)")
-                    completion(nil, error)
-                }
-            } else {
-                print("Unexpected status code: \(status)")
-            }
-        }
-
-        task.resume()
-    }
-
-    
-    
     
     lazy var onlineProcessing: CustomizationItem = {
         let item = CustomizationItem("Online Processing") { [weak self] in
