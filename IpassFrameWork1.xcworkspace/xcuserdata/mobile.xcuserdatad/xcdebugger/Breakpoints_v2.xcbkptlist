@@ -7,22 +7,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CD2EA3A1-8361-47BA-A6B6-7C945448AADE"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "IpassFrameWork1/FullProcess.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "233"
-            endingLineNumber = "233"
-            landmarkName = "faceMatchingApi(email:authToken:frontImg:backImg:custEmail:workflow:sid:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "A7779F8F-D542-499D-904F-CC008C80899C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -30,9 +14,9 @@
             filePath = "IpassFrameWork1/FullProcess.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
-            landmarkName = "faceMatchingApi(email:authToken:frontImg:backImg:custEmail:workflow:sid:completion:)"
+            startingLineNumber = "187"
+            endingLineNumber = "187"
+            landmarkName = "faceMatchingApi(scannResultData:email:authToken:frontImg:backImg:custEmail:workflow:sid:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

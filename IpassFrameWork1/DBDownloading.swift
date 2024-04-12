@@ -9,15 +9,8 @@ import Foundation
 import DocumentReader
 
 public class DataBaseDownloading{
-    
-    public static func addToNumbers(a:Int, b:Int)-> Int{
-       return a + b
-    }
-    public static func minusToNumbers(a:Int, b:Int)-> Int{
-       return a - b
-    }
-    
-    public static func Startdownloding(completion: @escaping (String, String, String) -> Void) {
+
+    public static func Initialization(completion: @escaping (String, String, String) -> Void) {
         DocumentReaderService.shared.initializeDatabaseAndAPI(progress: { state in
             var progressValue = ""
             var status = ""
@@ -27,7 +20,7 @@ public class DataBaseDownloading{
                 let progressString = String(format: "%.1f", progress * 100)
                 progressValue = "Downloading database: \(progressString)%"
             case .initializingAPI:
-                status = "Initializing..."
+                status = "Start Now"
                 APIHandler.LoginAuthAPi()
             case .completed:
 //                DispatchQueue.main.async {
