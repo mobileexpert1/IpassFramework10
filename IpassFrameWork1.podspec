@@ -58,7 +58,17 @@ Pod::Spec.new do |spec|
    # spec.dependency "Toast-Swift"
     # spec.dependency "PKHUD"
      # spec.dependency "ReachabilitySwift"
-          # spec.resources = "IpassFrameWork1/Resources/**/*.{license,bundle}"
-        spec.resources = 'IpassFrameWork1/**/*.license'
+  # Adding license file
+  spec.resource  = 'IpassFrameWork1/regula.license'
+
+  # Adding certificate files
+  spec.resource_bundles = {
+    'Certificates' => [
+      'IpassFrameWork1/Certificates.bundle',
+      'IpassFrameWork1/CertificatesPA.bundle',
+      'IpassFrameWork1/CertificatesTA.bundle'
+    ]
+  }
+
 
 end

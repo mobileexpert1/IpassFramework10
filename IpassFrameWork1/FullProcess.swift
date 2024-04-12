@@ -21,6 +21,10 @@ public class StartFullProcess {
     public static func fullProcessScanning(type: Int, controller: UIViewController, completion: @escaping (String?, Error?) -> Void) {
 //        DocReader.shared.processParams.doublePageSpread = true
         DocReader.shared.processParams.multipageProcessing = true
+        DocReader.shared.processParams.authenticityParams?.livenessParams?.checkHolo = false
+        DocReader.shared.processParams.authenticityParams?.livenessParams?.checkOVI = false
+        DocReader.shared.processParams.authenticityParams?.livenessParams?.checkMLI = false
+        
         let config = DocReader.ScannerConfig()
         
         switch type {
