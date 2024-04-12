@@ -107,9 +107,13 @@ public class StartFullProcess {
         return Int(arc4random_uniform(UInt32((upperBound - lowerBound + 1)))) + lowerBound
     }
 
-    
-    private static func getDocImages(datavalue: DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
-
+    private static func getDocImages(datavalue: DocumentReaderResults, completion: @escaping (String?, Error?) -> Void) {
+        let dispatchGroup = DispatchGroup()
+        var ocrResult: String?
+        var nfcResult: String?
+        var amlResult: String?
+        
+        
         var image1 = ""
         var image2 = ""
         
@@ -126,35 +130,98 @@ public class StartFullProcess {
            }
         
         let randomNo = generateRandomTwoDigitNumber()
-        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
-            if let result = results{
-                
-                DispatchQueue.global().async {
-                    nfcPostApi(results: datavalue, completion:{(resultdata, error) in
-                        if let result = resultdata{
-                            
-                            DispatchQueue.global().async {
-                                amlPostApi(completion: {(resultdata, error) in })
-                                if let resultdata = resultdata{
-                                    completion(resultdata, nil)
-                                }else{
-                                    completion(nil, error)
-                                }
-                            }
-                            
-                        }else{
-                            completion(nil, error)
-                        }
-                        
-                    })
-                }
-                
-             completion(result, nil)
-            }else{
+        
+        // API Call 1: OCR Post
+        dispatchGroup.enter()
+        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)") { (results, error) in
+            if let result = results {
+                ocrResult = result
+            } else {
                 completion(nil, error)
             }
-        })
+            dispatchGroup.leave()
+        }
+        
+        // API Call 2: NFC Post
+        dispatchGroup.enter()
+        nfcPostApi(results: datavalue) { (result, error) in
+            if let result = result {
+                nfcResult = result
+            } else {
+                completion(nil, error)
+            }
+            dispatchGroup.leave()
+        }
+        
+        // API Call 3: AML Post
+        dispatchGroup.enter()
+        amlPostApi(sid: "\(randomNo)") { (result, error) in
+            if let result = result {
+                amlResult = result
+            } else {
+                completion(nil, error)
+            }
+            dispatchGroup.leave()
+        }
+        
+        // Notify completion when all API calls are finished
+        dispatchGroup.notify(queue: .main) {
+            // Check if all results are available
+            if let ocrResult = ocrResult, let nfcResult = nfcResult, let amlResult = amlResult {
+                completion(amlResult, nil) // Return the last API response as the completion result
+            } else {
+                completion(nil, NSError(domain: "APIError", code: -1, userInfo: nil))
+            }
+        }
     }
+
+    
+    
+    
+//    private static func getDocImages(datavalue: DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
+//
+//        var image1 = ""
+//        var image2 = ""
+//        
+//        
+//        for i in (0 ..<  datavalue.graphicResult.fields.count) {
+//            if(datavalue.graphicResult.fields[i].fieldName.lowercased() == "document image") {
+//                if(image1 == "") {
+//                    image1 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
+//                }
+//                else  if(image2 == "") {
+//                    image2 = datavalue.graphicResult.fields[i].value.toBase64() ?? ""
+//                }
+//            }
+//           }
+//        
+//        let randomNo = generateRandomTwoDigitNumber()
+//        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: "\(randomNo)", completion:  {(results, error) in
+//            if let result = results{
+//
+//                    nfcPostApi(results: datavalue, completion:{(resultdata, error) in
+//                        if let result = resultdata{
+//                            
+//                                amlPostApi(completion: {(resultdata, error) in })
+//                                if let resultdata = resultdata{
+//                                    completion(resultdata, nil)
+//                                }else{
+//                                    completion(nil, error)
+//                                }
+//                         
+//                            
+//                        }else{
+//                            completion(nil, error)
+//                        }
+//                        
+//                    })
+//                
+//             completion(result, nil)
+//            }else{
+//                completion(nil, error)
+//            }
+//        })
+//    }
  
     private static func ocrPostApi( email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
         
@@ -268,7 +335,7 @@ public class StartFullProcess {
         task.resume()
     }
 
-    private static func amlPostApi(completion: @escaping (String?, Error?) -> Void){
+    private static func amlPostApi(sid:String,completion: @escaping (String?, Error?) -> Void){
         guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/aml/manual?token=eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI") else { return }
 
         var request = URLRequest(url: apiURL)
@@ -280,7 +347,7 @@ public class StartFullProcess {
             "auth_token":UserLocalStore.shared.token,
             "entity_name":"ankit",
             "fuzLevel":"0",
-            "sid":"",
+            "sid":sid,
             "custEmail":"anuj12@gmail.com"
         ]
         print("nfcPostApi",apiURL)
