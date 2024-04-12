@@ -120,6 +120,10 @@ public class StartFullProcess {
     }
 
     private static func getDocImages(datavalue: DocumentReaderResults, completion: @escaping (String?, Error?) -> Void) {
+        
+        let dispatchGroup = DispatchGroup()
+        var ocrResult: String?
+        var saveResult: String?
 
         var image1 = ""
         var image2 = ""
@@ -136,23 +140,14 @@ public class StartFullProcess {
            }
         
         let randomNo = generateRandomTwoDigitNumber()
-
-        ocrPostApi(email: "ipassmobile@yopmail.com", authToken: UserLocalStore.shared.token, frontImg: image1, backImg: image2, custEmail: "anshul12@gmail.com", workflow: "10032", sid: randomNo) { (results, error) in
-            if let result = results {
-             saveDataPostApi(random: randomNo, results: datavalue, completion: {
-                ( resultdata, error) in
-                 if let result = resultdata{
-                     completion(result, nil)
-                 }else{
-                     completion(nil, error)
-                 }
-                 
-             })
+        
+        saveDataPostApi(random: randomNo, results: datavalue, completion: { (result, error) in
+            if let result = result {
+                completion(result, nil)
             } else {
                 completion(nil, error)
             }
-        }
-        
+        })
 
     }
 
@@ -163,120 +158,7 @@ public class StartFullProcess {
     }
     
 
- 
-    private static func ocrPostApi( email: String, authToken: String, frontImg: String, backImg: String, custEmail: String, workflow: String, sid: String, completion: @escaping (String?, Error?) -> Void){
-        
-        let authtoken = "eyJhbGciOiJIUzI1NiJ9.aXBhc3Ntb2JpbGVAeW9wbWFpbC5jb21pcGFzcyBpcGFzcw.y66dMZJUkzYrRZoczlkNum8unLc910zIuGUVaQW5lUI"
-        guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/plus/ocr/data?token=\(authtoken)") else {
-            print("Invalid API URL")
-            return
-        }
-        
-        let parameters: [String: Any] = [
-            "email": email,
-            "auth_token": authToken,
-            "image1": frontImg,
-            "image2": backImg,
-            "custEmail": custEmail,
-            "workflow": workflow,
-            "sid": sid
-        ]
-        print("ocrPostApi",apiURL)
-        print("ocr parameters",parameters)
-        
-        // Convert JSON to Data
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
-            print("Failed to serialize JSON data")
-            return
-        }
 
-        // Create URLRequest
-        var request = URLRequest(url: apiURL)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = jsonData
-
-        // Create URLSession
-        let session = URLSession.shared
-
-        // Create URLSession data task
-        let task = session.dataTask(with: request) { data, response, error in
-            // Handle response
-            guard let error = error else{
-                print("Error: \(String(describing: error))")
-               completion(nil, error)
-                return
-            }
-
-            if let httpResponse = response as? HTTPURLResponse {
-                print("Status code: \(httpResponse.statusCode)")
-            }
-
-            if let data = data {
-                if let responseString = String(data: data, encoding: .utf8) {
-                    print("Ocr Response data: \(responseString)")
-                   completion(responseString, nil)
-                }
-            }
-        }
-
-        task.resume()
-        
-    }
-    
-    
-
-    private static func nfcPostApi(results:DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
-        guard let apiURL = URL(string: "https://plusapi.ipass-mena.com/api/v1/ipass/nfc/data/post") else { return }
-
-        var request = URLRequest(url: apiURL)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let parameters: [String: Any] = [
-            "res": results.rawResult
-        ]
-        print("nfcPostApi",apiURL)
-        print("nfc parameters",parameters)
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
-        } catch let error {
-            print("Error serializing parameters: \(error.localizedDescription)")
-            return
-        }
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
-                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-
-            let status = response.statusCode
-            print("Response status code: \(status)")
-
-            if status == 200 {
-                do {
-                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        print("Response NFC Api-=-=",json)
-                     
-                        completion("\(json)", nil)
-
-                    } else {
-                        print("Failed to parse JSON response")
-                    }
-                } catch let error {
-                    print("Error parsing JSON response: \(error.localizedDescription)")
-                    completion(nil, error)
-                }
-            } else {
-                print("Unexpected status code: \(status)")
-            }
-        }
-
-        task.resume()
-    }
-    
-    
     
     private static func saveDataPostApi(random:String,results:DocumentReaderResults, completion: @escaping (String?, Error?) -> Void){
         guard let apiURL = URL(string: "https://ipassplus.csdevhub.com/api/v1/ipass/sdk/data/save") else { return }
@@ -292,8 +174,8 @@ public class StartFullProcess {
             "randomid": random
         ]
         
-        print("nfcPostApi",apiURL)
-        print("nfc parameters",parameters)
+        print("save data",apiURL)
+        print("save data",parameters)
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
         } catch let error {
